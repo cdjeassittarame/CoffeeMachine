@@ -1,5 +1,7 @@
 package com.company;
 
+import jdk.jfr.Unsigned;
+
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -10,8 +12,24 @@ public class Main {
     private static final int TWO_SUGAR = 2;
     private static String machineProtocolMessage;
     private static String drinkName;
+    private static double minimumMoney = 0.40;
+    private static double remainingMoney = 0;
+    private static String money=null;
+
 
     public static void main(String[] args) {
+
+        do {
+            System.out.println("Insert your money");
+            Scanner scannerMoney = new Scanner(System.in);
+            money = scannerMoney.nextLine();
+            remainingMoney = Double.parseDouble(money) - minimumMoney;
+            if (remainingMoney < 0){
+                System.out.println("There is " + remainingMoney + " left for your drink");
+            }
+        }
+        while (remainingMoney < 0);
+
         System.out.println("Could you chose your type of drink");
         Scanner scannerDrink = new Scanner(System.in);
         System.out.println(" 1.Tea\n 2.Coffee\n 3.Chocolate");
@@ -30,13 +48,13 @@ public class Main {
         String numberOfSugar = scannerNumberOfSugar.nextLine();
         int numberOfSugarChoice = Integer.parseInt(numberOfSugar);
         int sugarNumber = processSugarNumber(numberOfSugarChoice);
-        if (sugarNumber == 404 ) {
+        if (sugarNumber == 404) {
             return;
         }
         String stickPresence = processStick(numberOfSugarChoice);
         machineProtocolMessage = "PROTOCOL_MESSAGE: " + drinkType + ":" + sugarNumber + ":" + stickPresence;
         System.out.println(machineProtocolMessage);
-        String message = infomessage(drinkName,sugarNumber);
+        String message = infomessage(drinkName, sugarNumber);
 
         System.out.println(message);
     }
@@ -51,15 +69,25 @@ public class Main {
                     System.out.println("M:You chose Tea");
                     return resultDrink;
                 case 2:
-                    resultDrink = "C";
-                    drinkName = "Coffee";
-                    System.out.println("M:You chose Coffee");
-                    return resultDrink;
+                    if(Double.parseDouble(money)>= 0.60) {
+                        resultDrink = "C";
+                        drinkName = "Coffee";
+                        System.out.println("M:You chose Coffee");
+                        return resultDrink;
+                    }else{
+                        System.out.println("Not enough money");
+                        break;
+                    }
                 case 3:
-                    resultDrink = "H";
-                    drinkName = "Chocolate";
-                    System.out.println("M:You chose Chocolate");
-                    return resultDrink;
+                    if(Double.parseDouble(money)>= 0.50) {
+                        resultDrink = "H";
+                        drinkName = "Chocolate";
+                        System.out.println("M:You chose Chocolate");
+                        return resultDrink;
+                    }else{
+                        System.out.println("Not enough money");
+                        break;
+                    }
                 default:
                     System.out.println("Bad choice");
                     return null;
@@ -97,10 +125,10 @@ public class Main {
         String resultStick = null;
         String numberStick = null;
         if (Objects.nonNull(sugarNumber)) {
-            if(sugarNumber == 0){
+            if (sugarNumber == 0) {
                 resultStick = "M:No Stick";
                 numberStick = "0";
-            }else{
+            } else {
                 resultStick = "M:You will have one Stick";
                 numberStick = "1";
             }
@@ -110,7 +138,7 @@ public class Main {
     }
 
     public static String infomessage(String drinkName, int sugarNumber) {
-        String message = "Drink maker makes 1 " + drinkName +  " with";
+        String message = "Drink maker makes 1 " + drinkName + " with";
 
         switch (sugarNumber) {
             case 0:
