@@ -14,49 +14,76 @@ public class Main {
     private static String drinkName;
     private static double minimumMoney = 0.40;
     private static double remainingMoney = 0;
-    private static String money=null;
+    private static String money = null;
+    private static String drinkType = null;
 
 
     public static void main(String[] args) {
+        String extraHotOrNot = null;
 
-        do {
-            System.out.println("Insert your money");
-            Scanner scannerMoney = new Scanner(System.in);
-            money = scannerMoney.nextLine();
-            remainingMoney = Double.parseDouble(money) - minimumMoney;
-            if (remainingMoney < 0){
-                System.out.println("There is " + remainingMoney + " left for your drink");
+        try {
+            do {
+                System.out.println("Insert your money");
+                Scanner scannerMoney = new Scanner(System.in);
+                money = scannerMoney.nextLine();
+                remainingMoney = Double.parseDouble(money) - minimumMoney;
+                if (remainingMoney < 0) {
+                    System.out.println("There is " + remainingMoney + " left for your drink");
+                }
             }
-        }
-        while (remainingMoney < 0);
-
-        System.out.println("Could you chose your type of drink");
-        Scanner scannerDrink = new Scanner(System.in);
-        System.out.println(" 1.Tea\n 2.Coffee\n 3.Chocolate");
-
-        String drink = scannerDrink.nextLine();
-        int drinkChoice = Integer.parseInt(drink);
-        String drinkType = processDrinkType(drinkChoice);
-        if (drinkType == null) {
+            while (remainingMoney < 0);
+        } catch (NumberFormatException e) {
+            System.out.println("Error: " + e);
             return;
         }
-
-        System.out.println("How many sugar do you want?");
-        Scanner scannerNumberOfSugar = new Scanner(System.in);
-        System.out.println(" 0\n 1\n 2");
-
-        String numberOfSugar = scannerNumberOfSugar.nextLine();
-        int numberOfSugarChoice = Integer.parseInt(numberOfSugar);
-        int sugarNumber = processSugarNumber(numberOfSugarChoice);
-        if (sugarNumber == 404) {
+        try {
+            System.out.println("Could you chose your type of drink");
+            Scanner scannerDrink = new Scanner(System.in);
+            System.out.println(" 1.Tea\n 2.Coffee\n 3.Chocolate\n 4.Orange juice");
+            String drink = scannerDrink.nextLine();
+            int drinkChoice = Integer.parseInt(drink);
+            drinkType = processDrinkType(drinkChoice);
+            if (drinkType == null || drinkType.equals("O")) {
+                return;
+            }
+        }catch (NumberFormatException e){
+            System.out.println("Error: " + e);
             return;
         }
-        String stickPresence = processStick(numberOfSugarChoice);
-        machineProtocolMessage = "PROTOCOL_MESSAGE: " + drinkType + ":" + sugarNumber + ":" + stickPresence;
-        System.out.println(machineProtocolMessage);
-        String message = infomessage(drinkName, sugarNumber);
+        try {
+            System.out.println("How many sugar do you want?");
+            Scanner scannerNumberOfSugar = new Scanner(System.in);
+            System.out.println(" 0\n 1\n 2");
 
-        System.out.println(message);
+            String numberOfSugar = scannerNumberOfSugar.nextLine();
+            int numberOfSugarChoice = Integer.parseInt(numberOfSugar);
+            int sugarNumber = processSugarNumber(numberOfSugarChoice);
+            if (sugarNumber == 404) {
+                return;
+            }
+            String stickPresence = processStick(numberOfSugarChoice);
+
+            do {
+                System.out.println("ExtraHot Or not?");
+                Scanner scannerHot = new Scanner(System.in);
+                System.out.println("y or n");
+                extraHotOrNot = scannerHot.nextLine();
+
+                if (extraHotOrNot.equals("y")) {
+                    drinkType = drinkType + "h";
+                }
+
+            } while((!extraHotOrNot.contains("y") || !extraHotOrNot.contains("n")) && extraHotOrNot.isEmpty());
+
+            machineProtocolMessage = "PROTOCOL_MESSAGE: " + drinkType + ":" + sugarNumber + ":" + stickPresence;
+            System.out.println(machineProtocolMessage);
+            String message = infomessage(drinkName, sugarNumber);
+
+            System.out.println(message);
+        }catch(NumberFormatException e){
+            System.out.println("Error: " + e);
+            return;
+        }
     }
 
     public static String processDrinkType(int drink) {
@@ -69,22 +96,34 @@ public class Main {
                     System.out.println("M:You chose Tea");
                     return resultDrink;
                 case 2:
-                    if(Double.parseDouble(money)>= 0.60) {
+                    if (Double.parseDouble(money) >= 0.60) {
                         resultDrink = "C";
                         drinkName = "Coffee";
                         System.out.println("M:You chose Coffee");
                         return resultDrink;
-                    }else{
+                    } else {
                         System.out.println("Not enough money");
                         break;
                     }
                 case 3:
-                    if(Double.parseDouble(money)>= 0.50) {
+                    if (Double.parseDouble(money) >= 0.50) {
                         resultDrink = "H";
                         drinkName = "Chocolate";
                         System.out.println("M:You chose Chocolate");
                         return resultDrink;
-                    }else{
+                    } else {
+                        System.out.println("Not enough money");
+                        break;
+                    }
+                case 4:
+                    if (Double.parseDouble(money) >= 0.60) {
+                        resultDrink = "O";
+                        drinkName = "Orange juice";
+                        System.out.println("M:You chose Orange juice");
+                        machineProtocolMessage = "PROTOCOL_MESSAGE: " + resultDrink + ":" + ":";
+                        System.out.println(machineProtocolMessage);
+                        return resultDrink;
+                    } else {
                         System.out.println("Not enough money");
                         break;
                     }
