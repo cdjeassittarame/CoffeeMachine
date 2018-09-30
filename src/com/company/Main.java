@@ -1,6 +1,5 @@
 package com.company;
 
-import jdk.jfr.Unsigned;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -20,70 +19,84 @@ public class Main {
 
     public static void main(String[] args) {
         String extraHotOrNot = null;
-
-        try {
-            do {
-                System.out.println("Insert your money");
-                Scanner scannerMoney = new Scanner(System.in);
-                money = scannerMoney.nextLine();
-                remainingMoney = Double.parseDouble(money) - minimumMoney;
-                if (remainingMoney < 0) {
-                    System.out.println("There is " + remainingMoney + " left for your drink");
+        boolean isRestarted = false;
+        do {
+            try {
+                do {
+                    System.out.println("Insert your money");
+                    Scanner scannerMoney = new Scanner(System.in);
+                    money = scannerMoney.nextLine();
+                    remainingMoney = Double.parseDouble(money) - minimumMoney;
+                    if (remainingMoney < 0) {
+                        System.out.println("There is " + remainingMoney + " left for your drink");
+                    }
                 }
-            }
-            while (remainingMoney < 0);
-        } catch (NumberFormatException e) {
-            System.out.println("Error: " + e);
-            return;
-        }
-        try {
-            System.out.println("Could you chose your type of drink");
-            Scanner scannerDrink = new Scanner(System.in);
-            System.out.println(" 1.Tea\n 2.Coffee\n 3.Chocolate\n 4.Orange juice");
-            String drink = scannerDrink.nextLine();
-            int drinkChoice = Integer.parseInt(drink);
-            drinkType = processDrinkType(drinkChoice);
-            if (drinkType == null || drinkType.equals("O")) {
+                while (remainingMoney < 0);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: " + e);
                 return;
             }
-        }catch (NumberFormatException e){
-            System.out.println("Error: " + e);
-            return;
-        }
-        try {
-            System.out.println("How many sugar do you want?");
-            Scanner scannerNumberOfSugar = new Scanner(System.in);
-            System.out.println(" 0\n 1\n 2");
-
-            String numberOfSugar = scannerNumberOfSugar.nextLine();
-            int numberOfSugarChoice = Integer.parseInt(numberOfSugar);
-            int sugarNumber = processSugarNumber(numberOfSugarChoice);
-            if (sugarNumber == 404) {
+            try {
+                System.out.println("Could you chose your type of drink");
+                Scanner scannerDrink = new Scanner(System.in);
+                System.out.println(" 1.Tea\n 2.Coffee\n 3.Chocolate\n 4.Orange juice");
+                String drink = scannerDrink.nextLine();
+                int drinkChoice = Integer.parseInt(drink);
+                drinkType = processDrinkType(drinkChoice);
+                if (drinkType == null || drinkType.equals("O")) {
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: " + e);
                 return;
             }
-            String stickPresence = processStick(numberOfSugarChoice);
+            try {
+                System.out.println("How many sugar do you want?");
+                Scanner scannerNumberOfSugar = new Scanner(System.in);
+                System.out.println(" 0\n 1\n 2");
 
-            do {
-                System.out.println("ExtraHot Or not?");
-                Scanner scannerHot = new Scanner(System.in);
-                System.out.println("y or n");
-                extraHotOrNot = scannerHot.nextLine();
+                String numberOfSugar = scannerNumberOfSugar.nextLine();
+                int numberOfSugarChoice = Integer.parseInt(numberOfSugar);
+                int sugarNumber = processSugarNumber(numberOfSugarChoice);
+                if (sugarNumber == 404) {
+                    return;
+                }
+                String stickPresence = processStick(numberOfSugarChoice);
 
-                if (extraHotOrNot.equals("y")) {
-                    drinkType = drinkType + "h";
+                do {
+                    System.out.println("ExtraHot Or not?");
+                    Scanner scannerHot = new Scanner(System.in);
+                    System.out.println("y or n");
+                    extraHotOrNot = scannerHot.nextLine();
+
+                    if (extraHotOrNot.equals("y")) {
+                        drinkType = drinkType + "h";
+                    }
+
+                } while ((!extraHotOrNot.contains("y") || !extraHotOrNot.contains("n")) && extraHotOrNot.isEmpty());
+
+                machineProtocolMessage = "PROTOCOL_MESSAGE: " + drinkType + ":" + sugarNumber + ":" + stickPresence;
+                System.out.println(machineProtocolMessage);
+                String message = infomessage(drinkName, sugarNumber);
+
+                System.out.println(message);
+
+                Scanner scannerQuestionResponse = new Scanner(System.in);
+                System.out.println("Voulez recommencer ? O ou N");
+
+                String questionResponse = scannerNumberOfSugar.nextLine();
+
+                if (questionResponse.equals("O")){
+                    isRestarted = true;
+                }else{
+                    isRestarted = false;
                 }
 
-            } while((!extraHotOrNot.contains("y") || !extraHotOrNot.contains("n")) && extraHotOrNot.isEmpty());
-
-            machineProtocolMessage = "PROTOCOL_MESSAGE: " + drinkType + ":" + sugarNumber + ":" + stickPresence;
-            System.out.println(machineProtocolMessage);
-            String message = infomessage(drinkName, sugarNumber);
-
-            System.out.println(message);
-        }catch(NumberFormatException e){
-            System.out.println("Error: " + e);
-            return;
-        }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: " + e);
+                return;
+            }
+        }while(isRestarted);
     }
 
     public static String processDrinkType(int drink) {
