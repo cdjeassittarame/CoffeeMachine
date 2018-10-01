@@ -1,4 +1,4 @@
-package com.company;
+package main.com.company;
 
 
 import java.util.Objects;
@@ -82,15 +82,18 @@ public class Main {
                 System.out.println(message);
 
                 Scanner scannerQuestionResponse = new Scanner(System.in);
-                System.out.println("Voulez recommencer ? O ou N");
+                System.out.println("Want another drink ? Y or N");
 
                 String questionResponse = scannerNumberOfSugar.nextLine();
 
-                if (questionResponse.equals("O")){
+                if (questionResponse.equals("Y") || questionResponse.equals("y")){
                     isRestarted = true;
-                }else{
+                }else if (questionResponse.equals("N") || questionResponse.equals("n")){
+                    isRestarted = false;
+                } else {
                     isRestarted = false;
                 }
+
 
             } catch (NumberFormatException e) {
                 System.out.println("Error: " + e);
@@ -207,5 +210,4 @@ public class Main {
                 return null;
         }
     }
-
 }
