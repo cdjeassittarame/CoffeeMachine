@@ -21,19 +21,19 @@ public class Main {
         String extraHotOrNot = null;
         boolean isRestarted = false;
         do {
-            try {
-                do {
-                    System.out.println("Insert your money");
-                    Scanner scannerMoney = new Scanner(System.in);
-                    money = scannerMoney.nextLine();
-                    remainingMoney = Double.parseDouble(money) - minimumMoney;
-                    if (remainingMoney < 0) {
-                        System.out.println("There is " + remainingMoney + " left for your drink");
-                    }
-                }
-                while (remainingMoney < 0);
-            } catch (NumberFormatException e) {
-                System.out.println("Error: " + e);
+                    try {
+                        do {
+                            System.out.println("Insert your money");
+                            Scanner scannerMoney = new Scanner(System.in);
+                            money = scannerMoney.nextLine();
+                            remainingMoney = Double.parseDouble(money) - minimumMoney;
+                            if (remainingMoney < 0) {
+                                System.out.println("There is " + remainingMoney + " left for your drink");
+                            }
+                        }
+                        while (remainingMoney < 0);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: " + e);
                 return;
             }
             try {
